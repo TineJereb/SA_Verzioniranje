@@ -105,5 +105,12 @@ class articles_controller
         }
         die();
     }
+    function delete(){
+        $article = Article::find($_GET['id']);
 
+        if($article->delete()){
+            header("Location: /articles/myarticles");
+        }
+        die();
+    }
 }

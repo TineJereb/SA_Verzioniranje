@@ -72,13 +72,12 @@ class Article
     }
     public static function findMyArticles($id)
     {
-        $db = Db::getInstance(); // pridobimo instanco baze
+        $db = Db::getInstance();
         $id = mysqli_real_escape_string($db, $id);
-        $query = "SELECT * FROM articles WHERE user_id = '$id';"; // pripravimo query
-        $res = $db->query($query); // poženemo query
+        $query = "SELECT * FROM articles WHERE user_id = '$id';"; 
+        $res = $db->query($query); 
         $articles = array();
         while ($article = $res->fetch_object()) {
-            // Za vsak rezultat iz baze ustvarimo objekt (kličemo konstuktor) in ga dodamo v array $articles
             array_push($articles, new Article($article->id, $article->title, $article->abstract, $article->text, $article->date, $article->user_id));
         }
         return $articles;
@@ -90,6 +89,17 @@ class Article
         $text = mysqli_real_escape_string($db, $text);
         $id = $this->id;
         $query = "UPDATE articles SET title='$title', abstract='$abstract', text='$text' WHERE id='$id' LIMIT 1;";
+        if($db->query($query)){
+            return true;
+        }
+        else{
+            return false;
+        } 
+    }
+    public function delete(){
+        $db = Db::getInstance();
+        $id = $this->id;
+        $query = "DELETE FROM articles WHERE id='$id'";
         if($db->query($query)){
             return true;
         }
