@@ -86,4 +86,48 @@ class User
             return false;
         } 
     }
+    function load_profile(){
+        
+        if (isset($_POST["id"])){
+            header("Location: /users/profile?id=".$_POST["id"]);
+        }
+        else if (isset($_GET["id"])){
+            header("Location: /users/profile?id=".$_GET["id"]);
+        }
+        else{
+            header("Location: /pages/error");
+        }
+
+        die();
+    }
+    function profile(){
+
+        if (!isset($_GET["id"])){
+            header("Location: /pages/error");
+            die();
+        }
+        $user = User::find($_GET["id"]);
+
+        require_once('views/users/profile.php');
+
+    }
+    public static function num_of_articles($id) {
+        $db = Db::getInstance();
+        $id = mysqli_real_escape_string($db, $id);
+        $query = "SELECT COUNT(*) AS num FROM articles WHERE user_id='$id'";
+        
+        $result = mysqli_query($db, $query);
+        
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
+            
+            if ($row) {
+                return $row['num'];
+            } else {
+                return 0;
+            }
+        } else {
+            return -1; 
+        }
+    }
 }

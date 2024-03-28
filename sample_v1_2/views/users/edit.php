@@ -1,5 +1,5 @@
 <div class="container">
-    <h3 class="mb-3">Registracija</h3>
+    <h3 class="mb-3">Spremeni podatke</h3>
     <form action="/users/update" method="POST">
         <div class="mb-3">
             <label for="username" class="form-label">Vzdevek</label>
