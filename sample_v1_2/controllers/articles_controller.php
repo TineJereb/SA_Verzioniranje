@@ -63,4 +63,14 @@ class articles_controller
         }
         die();
     }
+    public function myarticles()
+    {
+        //preverimo, če je uporabnik podal informacijo, o oglasu, ki ga želi pogledati
+        if (!isset($_SESSION["USER_ID"])) {
+            return call('pages', 'error'); //če ne, kličemo akcijo napaka na kontrolerju stran
+            //retun smo nastavil za to, da se izvajanje kode v tej akciji ne nadaljuje
+        }
+        $articles = Article::findMyArticles($_SESSION["USER_ID"]);
+        require_once('views/articles/myarticles.php');
+    }
 }
