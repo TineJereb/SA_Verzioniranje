@@ -38,6 +38,29 @@ class articles_controller
     }
 
     public function create(){
+        $error = "";
+        if(isset($_GET["error"])){
+            switch($_GET["error"]){
+                case 1: $error = "Izpolnite vse podatke"; break;               
+                default: $error = "Prišlo je do napake med objavi novice.";
+            }
+        }
         require_once('views/articles/create.php');
+    }
+    public function store(){
+        //Preveri če so vsi podatki izpolnjeni
+        if(empty($_POST["title"]) || empty($_POST["abstract"]) || empty($_POST["text"])){
+            header("Location: /articles/create?error=1"); 
+        }
+
+        //Podatki so pravilno izpolnjeni, objavi novico
+        else if(Article::publish($_POST["title"], $_POST["abstract"], $_POST["text"], $_SESSION["USER_ID"])){
+            header("Location: /articles/create");
+        }
+        //Prišlo je do napake pri registraciji
+        else{
+            header("Location: /articles/create?error=2"); 
+        }
+        die();
     }
 }
