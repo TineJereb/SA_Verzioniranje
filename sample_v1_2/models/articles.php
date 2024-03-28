@@ -83,4 +83,18 @@ class Article
         }
         return $articles;
     }
+    public function update($title, $abstract, $text){
+        $db = Db::getInstance();
+        $title = mysqli_real_escape_string($db, $title);
+        $abstract = mysqli_real_escape_string($db, $abstract);
+        $text = mysqli_real_escape_string($db, $text);
+        $id = $this->id;
+        $query = "UPDATE articles SET title='$title', abstract='$abstract', text='$text' WHERE id='$id' LIMIT 1;";
+        if($db->query($query)){
+            return true;
+        }
+        else{
+            return false;
+        } 
+    }
 }
