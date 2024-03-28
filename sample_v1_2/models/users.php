@@ -130,4 +130,33 @@ class User
             return -1; 
         }
     }
+    public function check_password($password){
+        $db = Db::getInstance();
+        $id = $this->id;
+        $query = "SELECT password FROM users WHERE id='$id'";
+        $result = $db->query($query);
+        if ($result) {
+            $row = $result->fetch_assoc(); 
+            $db_password = $row['password']; 
+            if (password_verify($password, $db_password)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    public  function update_password($password){
+        $db = Db::getInstance();
+        $password = password_hash($password, PASSWORD_DEFAULT);
+        $id = $this->id;
+        $query = "UPDATE users SET password='$password' WHERE id=$id LIMIT 1;";
+        if($db->query($query)){
+            return true;
+        }
+        else{
+            return false;
+        } 
+    }
 }

@@ -87,4 +87,55 @@ class users_controller
         }
         die();
     }
+    function edit_password(){
+        if(!isset($_SESSION["USER_ID"])){
+            header("Location: /pages/error");
+            die();
+        }
+        $user = User::find($_SESSION["USER_ID"]);
+        $error = "";
+        if(isset($_GET["error"])){
+            switch($_GET["error"]){
+                case 1: $error = "Izpolnite vse podatke."; break;
+                case 2: $error = "Gesli se ne ujemata."; break;
+                case 3: $error = "Trenutno geslo ni pravilno."; break;
+                default: $error = "Prišlo je do napake med urejanjem uporabnika.";
+            }
+        }
+        
+        require_once('views/users/edit_password.php');
+
+        
+    }
+    function store_password(){
+
+        if(!isset($_SESSION["USER_ID"])){
+            header("Location: /pages/error");
+            die();
+        }
+        $user = User::find($_SESSION["USER_ID"]);
+        $pass = password_hash($_POST["current_password"], PASSWORD_DEFAULT);
+
+        //Preveri če so vsi podatki izpolnjeni
+        if(empty($_POST["current_password"]) || empty($_POST["new_password_1"]) || empty($_POST["new_password_2"])){
+            header("Location: /users/edit_password?error=1"); 
+        }
+        //Preveri če se gesli ujemata
+        else if($_POST["new_password_1"] != $_POST["new_password_2"]){
+            header("Location: /users/edit_password?error=2"); 
+        }
+
+        else if(!$user->check_password($_POST["current_password"])){
+            header("Location: /users/edit_password?error=3");
+        }  
+        //Podatki so pravilno izpolnjeni, registriraj uporabnika
+        else if($user->update_password($_POST["new_password_1"])){
+            header("Location: /");
+        }
+        //Prišlo je do napake pri registraciji
+        else{
+            header("Location: /users/edit_password?error=4"); 
+        }
+        die();
+    }
 }
